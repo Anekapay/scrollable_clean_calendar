@@ -62,8 +62,7 @@ class WeekdaysWidget extends StatelessWidget {
       child: Text(
         weekday.capitalize(),
         style: textStyle!.copyWith(
-          color: isSunday ? const Color(0xFFF01E1E) : textStyle!.color,
-          fontWeight: isSunday ? FontWeight.bold : textStyle!.fontWeight,
+          color: isSunday ? const Color(0xFFF01E1E) : const Color(0xFF898383),
         ),
       ),
     );
