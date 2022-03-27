@@ -119,43 +119,40 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.separated(
-      controller: widget.scrollController,
-      padding: widget.padding ??
-          const EdgeInsets.symmetric(horizontal: 16, vertical: 32),
-      // cacheExtent:
-      //     (MediaQuery.of(context).size.width / DateTime.daysPerWeek) * 6,
-      separatorBuilder: (_, __) =>
-          SizedBox(height: widget.spaceBetweenCalendars),
-      itemCount: widget.calendarController.months.length,
-      itemBuilder: (context, index) {
-        final month = widget.calendarController.months[index];
+    return Column(children: [
+      WeekdaysWidget(
+        showWeekdays: widget.showWeekdays,
+        cleanCalendarController: widget.calendarController,
+        locale: widget.locale,
+        layout: widget.layout,
+        weekdayBuilder: widget.weekdayBuilder,
+        textStyle: widget.weekdayTextStyle,
+      ),
+      Expanded(
+        child: ListView.separated(
+          controller: widget.scrollController,
+          padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
+          separatorBuilder: (_, __) =>
+              SizedBox(height: widget.spaceBetweenCalendars),
+          itemCount: widget.calendarController.months.length,
+          itemBuilder: (context, index) {
+            final month = widget.calendarController.months[index];
 
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              width: double.maxFinite,
-              child: MonthWidget(
-                month: month,
-                locale: widget.locale,
-                layout: widget.layout,
-                monthBuilder: widget.monthBuilder,
-                textAlign: widget.monthTextAlign,
-                textStyle: widget.monthTextStyle,
-              ),
-            ),
-            SizedBox(height: widget.spaceBetweenMonthAndCalendar),
-            Column(
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                WeekdaysWidget(
-                  showWeekdays: widget.showWeekdays,
-                  cleanCalendarController: widget.calendarController,
-                  locale: widget.locale,
-                  layout: widget.layout,
-                  weekdayBuilder: widget.weekdayBuilder,
-                  textStyle: widget.weekdayTextStyle,
+                SizedBox(
+                  width: double.maxFinite,
+                  child: MonthWidget(
+                    month: month,
+                    locale: widget.locale,
+                    layout: widget.layout,
+                    monthBuilder: widget.monthBuilder,
+                    textAlign: widget.monthTextAlign,
+                    textStyle: widget.monthTextStyle,
+                  ),
                 ),
+                SizedBox(height: widget.spaceBetweenMonthAndCalendar),
                 AnimatedBuilder(
                   animation: widget.calendarController,
                   builder: (_, __) {
@@ -178,10 +175,10 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
                   },
                 )
               ],
-            )
-          ],
-        );
-      },
-    );
+            );
+          },
+        ),
+      ),
+    ]);
   }
 }

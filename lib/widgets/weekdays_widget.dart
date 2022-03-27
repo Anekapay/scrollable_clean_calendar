@@ -26,56 +26,45 @@ class WeekdaysWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     if (!showWeekdays) return const SizedBox.shrink();
 
-    return GridView.count(
-      crossAxisCount: DateTime.daysPerWeek,
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      padding: EdgeInsets.zero,
-      children: List.generate(DateTime.daysPerWeek, (index) {
-        final weekDay = cleanCalendarController.getDaysOfWeek(locale)[index];
+    return Column(children: [
+      GridView.count(
+        crossAxisCount: DateTime.daysPerWeek,
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        padding: EdgeInsets.zero,
+        children: List.generate(DateTime.daysPerWeek, (index) {
+          final weekDay = cleanCalendarController.getDaysOfWeek(locale)[index];
+          bool isSunday = index == 6 ? true : false;
 
-        if (weekdayBuilder != null) {
-          return weekdayBuilder!(context, weekDay);
-        }
+          if (weekdayBuilder != null) {
+            return weekdayBuilder!(context, weekDay);
+          }
 
-        return <Layout, Widget Function()>{
-          Layout.DEFAULT: () => _pattern(context, weekDay),
-          Layout.BEAUTY: () => _beauty(context, weekDay)
-        }[layout]!();
-      }),
-    );
-  }
-
-  Widget _pattern(BuildContext context, String weekday) {
-    return Center(
-      child: Text(
-        weekday.capitalize(),
-        style: textStyle ??
-            Theme.of(context).textTheme.bodyText1!.copyWith(
-                  color: Theme.of(context)
-                      .textTheme
-                      .bodyText1!
-                      .color!
-                      .withOpacity(.4),
-                  fontWeight: FontWeight.bold,
-                ),
+          return <Layout, Widget Function()>{
+            Layout.DEFAULT: () => _beauty(context, weekDay, isSunday),
+            Layout.BEAUTY: () => _beauty(context, weekDay, isSunday)
+          }[layout]!();
+        }),
       ),
-    );
+      const Padding(
+        padding: EdgeInsets.symmetric(horizontal: 16),
+        child: Divider(
+          color: Color(0xFFD6D6D6),
+          thickness: 1,
+          height: 1,
+        ),
+      ),
+    ]);
   }
 
-  Widget _beauty(BuildContext context, String weekday) {
+  Widget _beauty(BuildContext context, String weekday, bool isSunday) {
     return Center(
       child: Text(
         weekday.capitalize(),
-        style: textStyle ??
-            Theme.of(context).textTheme.bodyText1!.copyWith(
-                  color: Theme.of(context)
-                      .textTheme
-                      .bodyText1!
-                      .color!
-                      .withOpacity(.4),
-                  fontWeight: FontWeight.bold,
-                ),
+        style: textStyle!.copyWith(
+          color: isSunday ? const Color(0xFFF01E1E) : textStyle!.color,
+          fontWeight: isSunday ? FontWeight.bold : textStyle!.fontWeight,
+        ),
       ),
     );
   }
